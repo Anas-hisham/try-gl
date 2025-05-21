@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h1>Electron + Vue</h1>
-    <button @click="sendToElectron">Send Message to Electron</button>
-    <h1>Hello</h1>
+    <h1>Welcome to stream buddy</h1>
   </div>
 </template>
 
@@ -15,3 +13,4 @@ export default {
   },
 }
 </script>
+

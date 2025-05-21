@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -10,21 +9,20 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'), //
-      contextIsolation: true, //
-      nodeIntegration: false, //
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   })
 
   const isDev = process.env.NODE_ENV === 'development'
 
   if (isDev) {
-    win.loadURL('http://localhost:5173') // Vite dev server
+    win.loadURL('http://localhost:5173')
   } else {
-    win.loadFile(path.join(__dirname, '../../dist/index.html')) // After build
+    win.loadFile(path.join(__dirname, '../../dist/index.html'))
   }
 }
-// Listen for message from renderer
 ipcMain.on('message', (event, arg) => {
   console.log('Received from renderer:', arg)
 })
