@@ -1,16 +1,13 @@
 <template>
-  <div>
-    <h1>Welcome to stream buddy</h1>
-  </div>
+  <MainApp />
 </template>
 
-<script>
-export default {
-  methods: {
-    sendToElectron() {
-      window.myAPI.sendMessage('Hello from Renderer!')
-    },
-  },
-}
+<script setup>
+import MainApp from './MainApp.vue'
 </script>
 
+<style>
+button {
+  cursor: pointer;
+}
+</style>
