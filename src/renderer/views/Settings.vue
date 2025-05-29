@@ -41,14 +41,25 @@ async function applySavePath() {
 }
 
 async function checkForUpdate() {
-  const updateInfo = await window.myAPI.checkForUpdate()
-  if (updateInfo.version && updateInfo.version !== version.value) {
-    newVersion.value = updateInfo.version
-    showUpdateBox.value = true
-  } else {
-    alert('You are using the latest version.')
+  try {
+    const updateInfo = await window.myAPI.checkForUpdate()
+    if (updateInfo?.error) {
+      alert(`Failed to check for update: ${updateInfo.error}`)
+      return
+    }
+
+    if (updateInfo.version && updateInfo.version !== version.value) {
+      newVersion.value = updateInfo.version
+      showUpdateBox.value = true
+    } else {
+      alert('✅ You are using the latest version.')
+    }
+  } catch (err) {
+    window.myAPI.logError(`Update check failed: ${err.message}`)
+    alert('❌ Could not check for updates.')
   }
 }
+
 
 function startUpdate() {
   window.myAPI.startUpdate()
@@ -73,6 +84,7 @@ window.myAPI.getAppVersion().then((v) => {
       ]"
     >
       ⚙️ Application Settings
+      New Version
     </h2>
 
     <div class="'p-4 rounded-lg  transition-colors duration-300',">
@@ -196,3 +208,5 @@ window.myAPI.getAppVersion().then((v) => {
     </div>
   </div>
 </template>
+
+

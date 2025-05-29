@@ -18,17 +18,12 @@ if (store.get('customSavePath') === null || undefined || "") {
 }
 console.log(customSavePath);
 
-
-
 const logFilePath = path.join(customSavePath, 'errors.log')
 
 function appendToLog(message) {
   const logMessage = `[${new Date()}] ${message}\n`
   fs.appendFileSync(logFilePath, logMessage)
 }
-
-
-
 
 
 let jsonFolderPath
@@ -66,6 +61,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
+      contextIsolation: true, // ADD THIS
     },
   })
 
@@ -233,25 +229,45 @@ process.on('unhandledRejection', (reason) => {
 
 
 
-ipcMain.handle('get_app_version', () => {
-  return app.getVersion()
-})
+ipcMain.handle('get_app_version', () => app.getVersion())
 
 ipcMain.handle('check_for_update', async () => {
   try {
+    appendToLog('Checking for updates...')
     const result = await autoUpdater.checkForUpdates()
     return result?.updateInfo || {}
   } catch (err) {
-    appendToLog(`Update Check Failed: ${err.message}`)
+    const msg = `Update Check Failed: ${err.message}`
+    appendToLog(msg)
+    console.error(msg)
     return { error: err.message }
   }
 })
 
 ipcMain.on('start_update', () => {
+  console.log('⬇️ Starting update download...')
+  appendToLog('Starting update download...')
   autoUpdater.downloadUpdate()
 })
 
-autoUpdater.on('update-downloaded', () => {
+autoUpdater.on('checking-for-update', () => {
+  appendToLog('Checking for update...')
+})
+
+autoUpdater.on('update-available', (info) => {
+  appendToLog(`Update available: ${JSON.stringify(info)}`)
+})
+
+autoUpdater.on('update-not-available', (info) => {
+  appendToLog(`No update available: ${JSON.stringify(info)}`)
+})
+
+autoUpdater.on('error', (err) => {
+  appendToLog(`Error during update: ${err.stack || err.message}`)
+})
+
+autoUpdater.on('update-downloaded', (info) => {
+  appendToLog(`Update downloaded: ${JSON.stringify(info)}`)
   autoUpdater.quitAndInstall()
 })
 

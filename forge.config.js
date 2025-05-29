@@ -42,5 +42,17 @@ export default {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
+  ], publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'Anas-hisham', // Replace with your GitHub username if different
+          name: 'try-gl', // Repo name from your GitHub link
+        },
+        prerelease: false,
+        draft: true,
+      },
+    },
   ],
 };
